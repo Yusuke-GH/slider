@@ -1,0 +1,110 @@
+@charset "UTF-8";
+
+%transition_all_03s {   //プレースホルダーセレクタ（@extendで呼び出し）
+  transition:all .3s ease;
+}
+%backface_visibility_hidden{    //背面から見たときの表示(透け感)を消す
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;   //width, heightを線幅を含めた値とする
+  margin: 0;    //web-default-stylingを消す
+  padding: 0;   //全体のセレクタ指定で詳細度が低いから、容易に上書きできる
+}
+
+.swiper-container {
+  width: 80%;
+  height: 100vh;
+  // display:inline-block;
+  // vertical-align:top;
+  float:left;
+  transition:opacity .6s ease, transform .3s ease;    //特定の指定
+  &.nav-slider{   //classが"swiper-container"&"nav-slider"の両者を持つ場合
+    width:20%;
+    padding-left:5px;   //border-boxにしているため、widthの中にpaddingがある
+    .swiper-slide{
+      cursor:pointer;
+      opacity:.4;   //active以外は透けさせる
+      transition:opacity .3s ease;    //activeに移り変わるときの変化
+      &.swiper-slide-active{
+        opacity:1;
+      }
+      .content{
+        width:100%;   //thumbnailの文字の設定
+        .title{
+          font-size:20px;
+        }
+      }//.content
+    }//.swiper-slide
+  }//&.nav-slider
+  &:hover{    //swiper-containerがホバーされたとき
+    .swiper-button-prev,
+    .swiper-button-next{
+      transform:translateX(0);    //移動
+      opacity:1;    //フェードイン(透明度)
+      visibility:visible;   //フェードイン(可視化)
+    }
+  }
+  &.loading{   //classが"swiper-container"&"loading"の両者を持つ場合
+    opacity:0;    //存在を消す(透明度)
+    visibility:hidden;    //存在を消す(透明度)
+  }   //loading中は、swiper-container(中身を含む)が消えていることを意味する。
+}
+.swiper-wrapper{
+
+}
+.swiper-slide{    //メインスライドのスタイリング
+  overflow: hidden;   //はみ出した分は、隠す
+  @extend %backface_visibility_hidden;    //背面から見たときの表示(透け感)を消す
+  .slide-bgimg{   //figureタグのスタイリング
+    position:absolute;    //位置調整を可能にする
+    top:0;    //ヒーローイメージをフルスクリーンレイアウトにする
+    left:0;
+    width:100%;
+    height:100%;
+    background-position:center;
+    background-size:cover;
+  }
+  .entity-img{
+    display:none;   //figureタグにあるimgタグの表示を消す
+  }
+  .content{   //文字を包むタグのスタイリング
+    position:absolute;    //基準位置は,HTMLタグ
+    top:40%;
+    left:0;
+    width:50%;
+    padding-left:5%;
+    color:#fff;
+    .title{
+      font-size:2.6em;    //親要素のfont-sizeに依存
+      font-weight:bold;
+      margin-bottom:30px;
+    }
+    .caption{
+      display:block;    //spanタグはもともとインライン要素
+      font-size:13px;
+      line-height:1.4;
+      transform:translateX(50px);   //通常状態の位置
+      // opacity:0;
+      transition:opacity .3s ease, transform .7s ease;
+      &.show{   //クラスが、"caption"&"show"のどちらも持つ場合
+        transform:translateX(0);    //0の位置すなわち左に移動
+        opacity:1;    //出現する。
+      }
+    }//.caption
+  }//.content
+}//.swiper-slide
+[class^="swiper-button-"]{    //クラスが"swiper-button-"を含む場合
+  width:44px;
+  opacity:0;    //存在を消す(透明度)
+  visibility:hidden;    //存在を消す(透明度)
+  @extend %transition_all_03s;    //変化の設定
+}
+.swiper-button-prev{
+  transform:translateX(50px);   //通常状態のいち設定
+}
+.swiper-button-next{
+  transform:translateX(-50px);   //通常状態のいち設定
+}
